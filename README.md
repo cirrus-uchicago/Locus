@@ -74,10 +74,15 @@ data dependencies allow.
 ## Citation
 
 ```tex
-@article{zhu2025locus,
-  title={Locus: Agentic predicate synthesis for directed fuzzing},
-  author={Zhu, Jie and Shen, Chihao and Li, Ziyang and Yu, Jiahao and Chen, Yizheng and Pei, Kexin},
-  journal={arXiv preprint arXiv:2508.21302},
-  year={2025}
+@inproceedings{zhu2025locus,
+    author={Zhu, Jie and Shen, Chihao and Li, Ziyang and Yu, Jiahao and Chen, Yizheng and Pei, Kexin},
+    title={Locus: Agentic predicate synthesis for directed fuzzing},
+    year = {2026},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    url = {https://doi.org/10.1145/3744916.3773102},
+    doi = {10.1145/3744916.3773102},
+    location = {Rio de Janeiro, Brazil},
+    series = {ICSE '26}
 }
 ```
