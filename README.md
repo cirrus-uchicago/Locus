@@ -82,6 +82,7 @@ data dependencies allow.
     address = {New York, NY, USA},
     url = {https://doi.org/10.1145/3744916.3773102},
     doi = {10.1145/3744916.3773102},
+    booktitle = {Proceedings of the ACM/IEEE 48nd International Conference on Software Engineering},
     location = {Rio de Janeiro, Brazil},
     series = {ICSE '26}
 }
