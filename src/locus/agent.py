@@ -105,9 +105,10 @@ KLEE_PROMPT_ADDENDUM = """\
 After each successful build, your predicates will be automatically verified using \
 KLEE symbolic execution (if enabled). You do not need to trigger this — the \
 orchestration layer handles it. If a predicate is found to be unsound, you will \
-receive a message with the counterexample (concrete variable values that bypass \
-the predicate but reach the canary). You get one chance to revise the predicate \
-based on this feedback. If the revision also fails, the predicate is reverted.
+receive a message with the counterexample (concrete variable values for which \
+the predicate exits but the canary is still reachable). You get one chance to \
+revise the predicate based on this feedback. If the revision also fails, the \
+predicate is reverted.
 """
 
 PREDICATE_REPORT_INSTRUCTION = """\

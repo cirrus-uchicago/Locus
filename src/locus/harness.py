@@ -26,8 +26,8 @@ Your task: Write a KLEE verification harness to check whether a predicate is sou
    - Includes `"klee/klee.h"`
    - Declares symbolic variables via `klee_make_symbolic()` for inputs relevant \
 to the path between the predicate and the canary
-   - Uses `klee_assume(!(predicate_condition))` to constrain inputs to cases where \
-the predicate would kill the execution
+   - Uses `klee_assume(predicate_condition)` to constrain inputs to cases where \
+the predicate would kill the execution (the guard is `if (predicate_condition) _exit(1);`)
    - Uses `klee_assert(!(canary_condition))` — if KLEE can violate this assertion, \
 a counterexample exists and the predicate is unsound
 3. Call write_harness with the complete C source code.
@@ -42,8 +42,8 @@ void __locus_klee_harness_{dimension}(void) {{
     int var;
     klee_make_symbolic(&var, sizeof(var), "var");
 
-    // Constrain: predicate would kill (negation of predicate condition)
-    klee_assume(!(predicate_condition));
+    // Constrain: predicate would kill (predicate condition holds)
+    klee_assume(predicate_condition);
 
     // Assert: canary should be unreachable
     klee_assert(!(canary_condition));
