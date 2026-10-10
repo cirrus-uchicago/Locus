@@ -64,7 +64,7 @@ For each dimension, synthesize:
 
 Insert at initial locations near the canary, then validate the build. \
 If the build fails, fix errors and retry (max 3 retries). After 3 failures, \
-revert that predicate's changes via git_restore and move to the next dimension.
+remove that predicate's changes with edit_file and move to the next dimension.
 
 ### Phase 3: OPTIMIZE PLACEMENT (one iteration per predicate)
 
@@ -92,7 +92,9 @@ line numbers. Never assume line numbers are stable across multiple edits.
 ## Error Recovery
 
 - If clangd fails, fall back to your own reasoning about the call graph.
-- If a build fails 3 times for one predicate, revert it and move on.
+- If a build fails 3 times for one predicate, remove it with edit_file and move on.
+- Use git_restore only to discard every change in a file: it also removes the \
+other predicates in that file.
 """
 
 
@@ -225,7 +227,11 @@ def create_agent(
 
     @agent.tool
     async def git_restore(ctx: RunContext[AgentDeps], file: str) -> str:
-        """Restore a file to its last committed state, reverting all changes."""
+        """Restore a file to its last committed state, reverting all changes.
+
+        This also removes every other predicate in the file. To drop one
+        predicate, delete its lines with edit_file instead.
+        """
         return _git_restore(ctx.deps.repo, file)
 
     @agent.tool

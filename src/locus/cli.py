@@ -217,8 +217,9 @@ async def _run(
                                 if "UNSOUND" in retry_msg:
                                     revert_result = await agent.run(
                                         f"{retry_msg}\nRevision also failed. "
-                                        f"Revert predicate [{report.dimension}] "
-                                        f"via git_restore and skip this dimension.",
+                                        f"Remove predicate [{report.dimension}] "
+                                        f"with edit_file and skip this dimension. "
+                                        f"Keep the other predicates in the file.",
                                         deps=deps,
                                         message_history=message_history,
                                     )
@@ -226,7 +227,8 @@ async def _run(
                             else:
                                 revert_result = await agent.run(
                                     f"Revision did not produce a new predicate. "
-                                    f"Revert [{report.dimension}] via git_restore.",
+                                    f"Remove [{report.dimension}] with edit_file. "
+                                    f"Keep the other predicates in the file.",
                                     deps=deps,
                                     message_history=message_history,
                                 )
