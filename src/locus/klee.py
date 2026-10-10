@@ -65,7 +65,9 @@ class KleeRunner:
         err_files = sorted(output_dir.glob("*.assert.err"))
         if not err_files:
             return ValidationResult(
-                sound=True, counterexample=None, klee_output=klee_output
+                sound=True if result.returncode == 0 else None,
+                counterexample=None,
+                klee_output=klee_output,
             )
 
         ktest_file = err_files[0].with_suffix("").with_suffix(".ktest")
@@ -109,7 +111,7 @@ class KleeRunner:
             build_result = self.build_bitcode()
             if not build_result.success:
                 return ValidationResult(
-                    sound=False,
+                    sound=None,
                     counterexample=None,
                     klee_output=f"Bitcode build failed: {build_result.output}",
                 )

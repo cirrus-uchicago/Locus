@@ -38,7 +38,7 @@ uv run locus \
 
 KLEE validation needs `klee` and `ktest-tool` on `PATH`, [gllvm](https://github.com/SRI-CSL/gllvm) (`gclang`, `get-bc`), and `clang` and `llvm-link` from the LLVM version your KLEE was built against. Set `KLEE_INCLUDE` to the directory that contains `klee/klee.h`.
 
-For each predicate, Locus writes a harness to `__locus_harness_<dimension>.c` in the repo root, runs the `--bitcode-build` command, and runs KLEE with entry point `__locus_klee_harness_<dimension>` on the newest `.bc` file in the repo root. The command must therefore compile the harness and link it with the target's bitcode into one `.bc` file in the repo root. Bitcode of the target alone has no harness entry point. Only one harness exists at a time, so `__locus_harness_*.c` matches it.
+For each predicate, Locus writes a harness to `__locus_harness_<dimension>.c` in the repo root, runs the `--bitcode-build` command, and runs KLEE with entry point `__locus_klee_harness_<dimension>` on the newest `.bc` file in the repo root. The command must therefore compile the harness and link it with the target's bitcode into one `.bc` file in the repo root. Bitcode of the target alone has no harness entry point. Only one harness exists at a time, so `__locus_harness_*.c` matches it. When the harness does not build or KLEE fails to run, Locus keeps the predicate, marks it as not validated, and logs the output.
 
 ### Predicate conventions
 

@@ -24,7 +24,7 @@ class BuildResult(BaseModel):
 class ValidationResult(BaseModel):
     """Result of KLEE symbolic validation of a predicate."""
 
-    sound: bool
+    sound: bool | None
     counterexample: dict[str, str] | None
     klee_output: str
 

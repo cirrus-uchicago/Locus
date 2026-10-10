@@ -14,6 +14,10 @@ logger = logging.getLogger("locus")
 
 def format_validation_message(result: ValidationResult, dimension: str) -> str:
     """Format a KLEE validation result as a message for the main agent."""
+    if result.sound is None:
+        return (
+            f"Predicate [{dimension}] not validated: harness build or KLEE run failed."
+        )
     if result.sound:
         return f"Predicate [{dimension}] passed symbolic validation."
     ce = result.counterexample or {}
@@ -57,7 +61,12 @@ async def validate_predicate_with_klee(
         dimension=dimension,
     )
 
-    logger.debug("KLEE validation for %s: %s", dimension, result.klee_output)
+    logger.log(
+        logging.WARNING if result.sound is None else logging.DEBUG,
+        "KLEE validation for %s: %s",
+        dimension,
+        result.klee_output,
+    )
     return format_validation_message(result, dimension)
 
 
