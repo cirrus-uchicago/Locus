@@ -104,11 +104,11 @@ KLEE_PROMPT_ADDENDUM = """\
 
 After each successful build, your predicates will be automatically verified using \
 KLEE symbolic execution (if enabled). You do not need to trigger this — the \
-orchestration layer handles it. If a predicate is found to be unsound, you will \
-receive a message with the counterexample (concrete variable values for which \
-the predicate exits but the canary is still reachable). You get one chance to \
-revise the predicate based on this feedback. If the revision also fails, the \
-predicate is reverted.
+orchestration layer finds every `_exit(1)` guard you add or change and validates \
+it. If a predicate is found to be unsound, you will receive a message with the \
+counterexample (concrete variable values for which the predicate exits but the \
+canary is still reachable). You get one chance to revise the predicate based on \
+this feedback. If the revision also fails, the predicate is reverted.
 """
 
 PREDICATE_REPORT_INSTRUCTION = """\
@@ -123,7 +123,8 @@ LOCUS_PREDICATE: dimension=<name> file=<path> line=<number> condition=<expr> act
 Example:
 LOCUS_PREDICATE: dimension=value_range file=src/main.c line=42 condition=row_width>65535 action=inserted
 
-This allows the orchestration layer to trigger symbolic validation.
+The orchestration layer uses this line to name the predicate and to tell a move \
+from a new insertion.
 """
 
 

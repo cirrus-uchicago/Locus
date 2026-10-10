@@ -40,6 +40,8 @@ KLEE validation needs `klee` and `ktest-tool` on `PATH`, [gllvm](https://github.
 
 For each predicate, Locus writes a harness to `__locus_harness_<dimension>.c` in the repo root, runs the `--bitcode-build` command, and runs KLEE with entry point `__locus_klee_harness_<dimension>` on the newest `.bc` file in the repo root. The command must therefore compile the harness and link it with the target's bitcode into one `.bc` file in the repo root. Bitcode of the target alone has no harness entry point. Only one harness exists at a time, so `__locus_harness_*.c` matches it. When the harness does not build or KLEE fails to run, Locus keeps the predicate, marks it as not validated, and logs the output.
 
+Locus finds the predicates to validate in `git diff`: every `if (...) _exit(1);` guard added or changed since the previous validation, wherever its `// Locus:` comment is. The agent's `LOCUS_PREDICATE:` report lines are optional. A matching report only names the predicate's dimension and marks a moved predicate. An added `_exit(1)` outside such a guard is not validated, and Locus logs a warning for it.
+
 ### Predicate conventions
 
 All inserted code follows these rules:
