@@ -116,11 +116,7 @@ async def _run(
     )
 
     try:
-        from locus.validation import (
-            validate_predicate_with_klee,
-            parse_predicate_reports,
-            detect_predicates_from_diff,
-        )
+        from locus.validation import PredicateTracker, validate_predicate_with_klee
 
         prompt = (
             f"Begin the refinement loop. The canary is at {canary.file}:{canary.line} "
@@ -133,6 +129,7 @@ async def _run(
         )
         message_history = None
         result = None
+        tracker = PredicateTracker(str(repo_path))
         for iteration in range(1, max_iterations + 1):
             print(f"\n--- Iteration {iteration}/{max_iterations} ---")
             if iteration == 1:
@@ -162,10 +159,7 @@ async def _run(
             message_history = result.all_messages()
 
             if klee_runner:
-                reports = parse_predicate_reports(result.output)
-                if not reports:
-                    reports = detect_predicates_from_diff(repo)
-                for report in reports:
+                for report in tracker.new_predicates(result.new_messages()):
                     print(f"  Validating predicate [{report.dimension}]...")
                     validation_msg = await validate_predicate_with_klee(
                         klee_runner=klee_runner,
@@ -198,9 +192,10 @@ async def _run(
                                 message_history=message_history,
                             )
                             message_history = retry_result.all_messages()
-                            retry_reports = parse_predicate_reports(retry_result.output)
-                            if retry_reports:
-                                r2 = retry_reports[0]
+                            revisions = tracker.new_predicates(
+                                retry_result.new_messages()
+                            )
+                            for r2 in revisions:
                                 retry_msg = await validate_predicate_with_klee(
                                     klee_runner=klee_runner,
                                     model=model,
@@ -224,7 +219,8 @@ async def _run(
                                         message_history=message_history,
                                     )
                                     message_history = revert_result.all_messages()
-                            else:
+                                    break
+                            if not revisions:
                                 revert_result = await agent.run(
                                     f"Revision did not produce a new predicate. "
                                     f"Remove [{report.dimension}] with edit_file. "
